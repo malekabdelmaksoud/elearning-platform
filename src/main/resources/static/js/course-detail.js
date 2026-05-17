@@ -58,6 +58,14 @@ async function loadCourse() {
 
         renderLessons(currentCourse.lessons || []);
 
+        // Auto-select the first lesson so content shows immediately
+        if (currentCourse.lessons && currentCourse.lessons.length > 0) {
+            const firstItem = document.querySelector('.lesson-item');
+            if (firstItem) {
+                showLesson(currentCourse.lessons[0], firstItem);
+            }
+        }
+
         // Update lesson completion marks
         if (currentProgress && currentProgress.completedLessonIds) {
             updateLessonCompletionStatus(currentProgress.completedLessonIds);
