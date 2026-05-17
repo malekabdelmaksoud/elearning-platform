@@ -60,27 +60,29 @@
 
 <!-- Main Content -->
 <div class="container" style="padding-top:2rem; padding-bottom:2rem;">
-    <div style="display:grid; grid-template-columns:300px 1fr; gap:1.5rem; align-items:start;">
+    <div style="display:grid; grid-template-columns:320px 1fr; gap:1.5rem; align-items:start;">
 
         <!-- Left column: Lessons + Files -->
-        <div>
-            <!-- Lessons -->
-            <div class="section-header" style="margin-bottom:0.8rem;">
-                <h2 style="font-size:1rem;">📖 Lessons</h2>
-                <button id="add-lesson-btn" class="btn btn-primary btn-sm"
-                        style="display:none;" onclick="openAddLessonModal()">+ Add</button>
-            </div>
-            <div id="lesson-list" class="lesson-list" style="margin-bottom:1.5rem;">
-                <p style="color:var(--text-muted); font-size:0.9rem;">No lessons yet.</p>
+        <div style="display:flex; flex-direction:column; gap:1.2rem;">
+            <!-- Lessons Card -->
+            <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); padding:1.2rem;">
+                <div class="section-header" style="margin-bottom:0.8rem;">
+                    <h2 style="font-size:1rem;">📖 Lessons</h2>
+                    <button id="add-lesson-btn" class="btn btn-primary btn-sm"
+                            style="display:none;" onclick="openAddLessonModal()">+ Add</button>
+                </div>
+                <div id="lesson-list" class="lesson-list">
+                    <p style="color:var(--text-muted); font-size:0.9rem;">No lessons yet.</p>
+                </div>
             </div>
 
-            <!-- Files Section -->
-            <div style="border-top:1px solid var(--border); padding-top:1.2rem;">
+            <!-- Files Card -->
+            <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); padding:1.2rem;">
                 <div class="section-header" style="margin-bottom:0.8rem;">
                     <h2 style="font-size:1rem;">📎 Course Files</h2>
                 </div>
 
-                <!-- Upload area (shown for all authenticated users) -->
+                <!-- Upload area -->
                 <div id="upload-area" style="margin-bottom:1rem;">
                     <div id="file-alert" class="alert"></div>
                     <div style="display:flex; gap:0.5rem; align-items:center;">

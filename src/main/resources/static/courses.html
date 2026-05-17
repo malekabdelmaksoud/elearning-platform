@@ -32,21 +32,58 @@
 <div class="hero" style="padding:3rem 2rem;">
     <h1 style="font-size:2rem;">Explore All Courses</h1>
     <p>Find the course that suits you and start learning today.</p>
-    <!-- Search bar -->
-    <div style="max-width:450px; margin:0 auto; position:relative;">
-        <input type="text" id="search-input" class="form-control"
-               placeholder="🔍  Search courses..."
-               style="padding-left:1.2rem; border-radius:50px; background:rgba(255,255,255,0.07);">
+    <!-- Search + Add Course -->
+    <div style="max-width:600px; margin:0 auto; display:flex; gap:0.8rem; align-items:center; flex-wrap:wrap; justify-content:center;">
+        <div style="flex:1; min-width:250px; position:relative;">
+            <input type="text" id="search-input" class="form-control"
+                   placeholder="🔍  Search courses..."
+                   style="padding-left:1.2rem; border-radius:50px; background:rgba(255,255,255,0.07);">
+        </div>
+        <button id="create-course-btn" class="btn btn-primary"
+                style="display:none; border-radius:50px; padding:0.65rem 1.6rem;"
+                onclick="openCreateModal()">
+            + Add Course
+        </button>
     </div>
 </div>
 
 <!-- Course Grid -->
 <div class="container">
+    <div class="section-header" style="margin-top:1.5rem;">
+        <h2 id="courses-count-label">All Courses</h2>
+    </div>
     <div id="courses-grid" class="course-grid">
         <div class="empty-state" style="grid-column:1/-1;">
             <div class="spinner"></div>
             <p style="margin-top:1rem; color:var(--text-muted);">Loading courses...</p>
         </div>
+    </div>
+</div>
+
+<!-- Modal: Create Course (opens in same page) -->
+<div id="create-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>📚 Create New Course</h3>
+            <button class="modal-close" onclick="closeCreateModal()">✕</button>
+        </div>
+        <div id="modal-alert" class="alert"></div>
+        <form id="create-course-form">
+            <div class="form-group">
+                <label for="course-title">Course Title</label>
+                <input type="text" id="course-title" class="form-control"
+                       placeholder="e.g. Introduction to Java" required>
+            </div>
+            <div class="form-group">
+                <label for="course-desc">Description</label>
+                <textarea id="course-desc" class="form-control" rows="4"
+                          placeholder="What will students learn?"></textarea>
+            </div>
+            <div style="display:flex; gap:0.8rem; justify-content:flex-end;">
+                <button type="button" class="btn btn-outline" onclick="closeCreateModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">🚀 Create Course</button>
+            </div>
+        </form>
     </div>
 </div>
 
