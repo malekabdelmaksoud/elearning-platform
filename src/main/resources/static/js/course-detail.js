@@ -77,6 +77,9 @@ async function loadCourse() {
         // Load announcements
         refreshAnnouncementsTab(courseId);
 
+        // Initialize live class tab
+        initLiveClass();
+
     } catch (err) {
         document.getElementById('course-title').textContent = 'Course not found';
         console.error(err);
