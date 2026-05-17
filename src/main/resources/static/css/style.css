@@ -1072,6 +1072,34 @@ textarea.form-control { resize: vertical; min-height: 120px; }
     display: inline-block;
 }
 
+/* ===== LIVE CLASS ===== */
+.live-class-container {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    min-height: 300px;
+}
+
+#jitsi-container iframe {
+    border-radius: var(--radius) !important;
+}
+
+#live-lobby .empty-state {
+    background: linear-gradient(135deg, rgba(108,99,255,0.05) 0%, rgba(255,101,132,0.05) 100%);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+}
+
+#join-live-btn {
+    animation: pulse-btn 2s ease-in-out infinite;
+}
+
+@keyframes pulse-btn {
+    0%, 100% { box-shadow: 0 4px 15px rgba(108,99,255,0.4); }
+    50%      { box-shadow: 0 4px 30px rgba(108,99,255,0.7); }
+}
+
 /* ===== ABOUT PAGE ===== */
 .about-grid {
     display: grid;

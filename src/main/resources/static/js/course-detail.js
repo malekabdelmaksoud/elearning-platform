@@ -214,7 +214,7 @@ async function doMarkComplete(lessonId) {
 }
 
 // -----------------------------------------------
-// Tab switch — updated for 3 tabs
+// Tab switch — updated for 4 tabs
 // -----------------------------------------------
 function switchTab(tab, btn) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -222,6 +222,7 @@ function switchTab(tab, btn) {
     document.getElementById('tab-content').style.display       = tab === 'content'       ? 'block' : 'none';
     document.getElementById('tab-announcements').style.display = tab === 'announcements' ? 'block' : 'none';
     document.getElementById('tab-chat').style.display          = tab === 'chat'          ? 'block' : 'none';
+    document.getElementById('tab-live').style.display          = tab === 'live'          ? 'block' : 'none';
 }
 
 // -----------------------------------------------
