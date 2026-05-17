@@ -27,6 +27,13 @@ public class FileResource {
     @Column(name = "file_size")
     private Long fileSize;
 
+    // Store the actual file content in the database (BLOB)
+    // This ensures files persist across Render redeploys
+    @Lob
+    @Column(name = "file_data", columnDefinition = "LONGBLOB")
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] fileData;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
@@ -39,11 +46,12 @@ public class FileResource {
     private LocalDateTime uploadedAt = LocalDateTime.now();
 
     public FileResource(String originalName, String storedName, String contentType,
-                        Long fileSize, Course course, User uploadedBy) {
+                        Long fileSize, byte[] fileData, Course course, User uploadedBy) {
         this.originalName = originalName;
         this.storedName   = storedName;
         this.contentType  = contentType;
         this.fileSize     = fileSize;
+        this.fileData     = fileData;
         this.course       = course;
         this.uploadedBy   = uploadedBy;
     }

@@ -7,18 +7,14 @@ import com.elearning.repository.CourseRepository;
 import com.elearning.repository.FileResourceRepository;
 import com.elearning.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.*;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -33,12 +29,9 @@ public class FileController {
     @Autowired private CourseRepository       courseRepository;
     @Autowired private UserService            userService;
 
-    @Value("${file.upload-dir:./uploads}")
-    private String uploadDir;
-
     // -----------------------------------------------
     // POST /api/files/upload/{courseId}
-    // Upload a file and attach it to a course
+    // Upload a file and store it in the database
     // -----------------------------------------------
     @PostMapping("/upload/{courseId}")
     public ResponseEntity<?> uploadFile(
@@ -50,23 +43,20 @@ public class FileController {
             Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
 
-            // Create upload directory if it doesn't exist
-            Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
-            Files.createDirectories(uploadPath);
+            // Generate a unique stored filename
+            String ext        = getExtension(file.getOriginalFilename());
+            String storedName = UUID.randomUUID().toString() + ext;
 
-            // Generate a unique stored filename to avoid collisions
-            String ext         = getExtension(file.getOriginalFilename());
-            String storedName  = UUID.randomUUID().toString() + ext;
-            Path   targetPath  = uploadPath.resolve(storedName);
+            // Read file bytes and store in database
+            byte[] fileData = file.getBytes();
 
-            Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
-
-            // Save metadata to database
+            // Save metadata + file content to database
             FileResource resource = new FileResource(
                 file.getOriginalFilename(),
                 storedName,
                 file.getContentType(),
                 file.getSize(),
+                fileData,
                 course,
                 uploader
             );
@@ -106,19 +96,17 @@ public class FileController {
 
     // -----------------------------------------------
     // GET /api/files/{fileId}/download
-    // Download a file by its ID
+    // Download a file from the database
     // -----------------------------------------------
     @GetMapping("/{fileId}/download")
-    public ResponseEntity<Resource> downloadFile(@PathVariable Long fileId) {
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> downloadFile(@PathVariable Long fileId) {
         try {
             FileResource fileResource = fileResourceRepository.findById(fileId)
                 .orElseThrow(() -> new RuntimeException("File not found"));
 
-            Path filePath = Paths.get(uploadDir).toAbsolutePath()
-                                 .resolve(fileResource.getStoredName()).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (!resource.exists()) {
+            byte[] fileData = fileResource.getFileData();
+            if (fileData == null || fileData.length == 0) {
                 return ResponseEntity.notFound().build();
             }
 
@@ -130,10 +118,9 @@ public class FileController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                     "attachment; filename=\"" + fileResource.getOriginalName() + "\"")
-                .body(resource);
+                .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(fileData.length))
+                .body(fileData);
 
-        } catch (MalformedURLException e) {
-            return ResponseEntity.internalServerError().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
@@ -158,19 +145,11 @@ public class FileController {
                 return ResponseEntity.status(403).body(Map.of("error", "Permission denied"));
             }
 
-            // Delete from filesystem
-            Path filePath = Paths.get(uploadDir).toAbsolutePath()
-                                 .resolve(fileResource.getStoredName()).normalize();
-            Files.deleteIfExists(filePath);
-
             // Delete from database
             fileResourceRepository.delete(fileResource);
 
             return ResponseEntity.ok(Map.of("message", "File deleted successfully"));
 
-        } catch (IOException e) {
-            return ResponseEntity.internalServerError()
-                .body(Map.of("error", "Could not delete file: " + e.getMessage()));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
