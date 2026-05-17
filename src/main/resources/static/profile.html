@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELearn — My Profile</title>
+    <meta name="description" content="Manage your ELearn account settings">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar">
+    <a class="navbar-brand" href="dashboard.html">🎓 ELearn</a>
+    <ul class="navbar-nav">
+        <li><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+        <li><a class="nav-link" href="courses.html">Courses</a></li>
+        <li><a class="nav-link" href="about.html">About</a></li>
+        <li><a class="nav-link active" href="profile.html">Profile</a></li>
+    </ul>
+    <div style="display:flex; align-items:center; gap:1rem;">
+        <div class="user-badge">
+            <span>👤</span>
+            <span id="nav-username">...</span>
+            <span id="nav-role" class="role-tag">...</span>
+        </div>
+        <button id="logout-btn" class="btn btn-outline btn-sm">Logout</button>
+    </div>
+</nav>
+
+<!-- Profile Content -->
+<div class="container" style="padding-top:2rem; padding-bottom:3rem;">
+
+    <!-- Header -->
+    <div class="dashboard-header">
+        <h1>⚙️ My Profile</h1>
+        <p style="color:var(--text-muted); margin-top:0.3rem;">Manage your account information securely</p>
+    </div>
+
+    <div class="profile-grid">
+
+        <!-- Left: Account Info Card -->
+        <div class="profile-card">
+            <div class="profile-avatar" id="profile-avatar">👤</div>
+            <h2 id="profile-name" class="profile-display-name">Loading...</h2>
+            <span id="profile-role-badge" class="role-tag">...</span>
+
+            <div class="profile-info-list">
+                <div class="profile-info-row">
+                    <span class="profile-info-label">📧 Email</span>
+                    <span class="profile-info-value" id="profile-email">...</span>
+                </div>
+                <div class="profile-info-row">
+                    <span class="profile-info-label">🔑 Role</span>
+                    <span class="profile-info-value" id="profile-role">...</span>
+                </div>
+                <div class="profile-info-row">
+                    <span class="profile-info-label">📅 Member Since</span>
+                    <span class="profile-info-value" id="profile-date">...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Edit Forms -->
+        <div>
+
+            <!-- Update Info Form -->
+            <div class="profile-form-card">
+                <div class="profile-form-header">
+                    <div class="profile-form-icon">✏️</div>
+                    <div>
+                        <h3>Update Information</h3>
+                        <p style="color:var(--text-muted); font-size:0.82rem;">Change your name or email address</p>
+                    </div>
+                </div>
+
+                <div id="info-alert" class="alert"></div>
+
+                <form id="update-info-form" novalidate>
+                    <div class="form-group">
+                        <label for="update-name">Full Name</label>
+                        <input type="text" id="update-name" class="form-control"
+                               placeholder="Your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="update-email">Email Address</label>
+                        <input type="email" id="update-email" class="form-control"
+                               placeholder="you@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="info-current-password">Current Password <span style="color:var(--danger);">*</span></label>
+                        <input type="password" id="info-current-password" class="form-control"
+                               placeholder="Required for security" required>
+                    </div>
+
+                    <div style="display:flex; gap:0.8rem; justify-content:flex-end;">
+                        <button type="submit" id="update-info-btn" class="btn btn-primary">
+                            💾 Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Change Password Form -->
+            <div class="profile-form-card" style="margin-top:1.5rem;">
+                <div class="profile-form-header">
+                    <div class="profile-form-icon">🔒</div>
+                    <div>
+                        <h3>Change Password</h3>
+                        <p style="color:var(--text-muted); font-size:0.82rem;">Keep your account secure with a strong password</p>
+                    </div>
+                </div>
+
+                <div id="password-alert" class="alert"></div>
+
+                <form id="change-password-form" novalidate>
+                    <div class="form-group">
+                        <label for="pwd-current">Current Password <span style="color:var(--danger);">*</span></label>
+                        <input type="password" id="pwd-current" class="form-control"
+                               placeholder="Your current password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pwd-new">New Password</label>
+                        <input type="password" id="pwd-new" class="form-control"
+                               placeholder="At least 6 characters" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pwd-confirm">Confirm New Password</label>
+                        <input type="password" id="pwd-confirm" class="form-control"
+                               placeholder="Repeat new password" required>
+                    </div>
+
+                    <div style="display:flex; gap:0.8rem; justify-content:flex-end;">
+                        <button type="submit" id="change-pwd-btn" class="btn btn-primary">
+                            🔐 Update Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Delete Account -->
+            <div class="profile-form-card" style="margin-top:1.5rem; border-color: rgba(255,107,107,0.3);">
+                <div class="profile-form-header">
+                    <div class="profile-form-icon">⚠️</div>
+                    <div>
+                        <h3 style="color:var(--danger);">Delete Account</h3>
+                        <p style="color:var(--text-muted); font-size:0.82rem;">Permanently delete your account and all data. This cannot be undone.</p>
+                    </div>
+                </div>
+
+                <div id="delete-alert" class="alert"></div>
+
+                <form id="delete-account-form" novalidate>
+                    <div class="form-group">
+                        <label for="delete-password">Enter your password to confirm <span style="color:var(--danger);">*</span></label>
+                        <input type="password" id="delete-password" class="form-control"
+                               placeholder="Your current password" required>
+                    </div>
+                    <div style="display:flex; gap:0.8rem; justify-content:flex-end;">
+                        <button type="submit" id="delete-account-btn" class="btn btn-danger">
+                            🗑 Delete My Account
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="js/courses.js"></script>
+<script src="js/profile.js"></script>
+</body>
+</html>

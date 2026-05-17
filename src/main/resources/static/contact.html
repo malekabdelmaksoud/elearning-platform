@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELearn — Contact Us</title>
+    <meta name="description" content="Get in touch with the ELearn team">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar">
+    <a class="navbar-brand" href="dashboard.html">🎓 ELearn</a>
+    <ul class="navbar-nav">
+        <li><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+        <li><a class="nav-link" href="courses.html">Courses</a></li>
+        <li><a class="nav-link" href="about.html">About</a></li>
+        <li><a class="nav-link active" href="contact.html">Contact</a></li>
+    </ul>
+    <div style="display:flex; align-items:center; gap:1rem;">
+        <div class="user-badge">
+            <span>👤</span>
+            <span id="nav-username">...</span>
+            <span id="nav-role" class="role-tag">...</span>
+        </div>
+        <button id="logout-btn" class="btn btn-outline btn-sm">Logout</button>
+    </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero" style="padding:3rem 2rem;">
+    <h1 style="font-size:2.2rem;">Get In Touch</h1>
+    <p>Have a question or feedback? We'd love to hear from you.</p>
+</div>
+
+<!-- Contact Content -->
+<div class="container" style="padding:3rem 1.5rem;">
+    <div class="contact-grid">
+
+        <!-- Contact Info Cards -->
+        <div>
+            <div class="contact-info-card">
+                <div class="contact-info-icon">📧</div>
+                <div>
+                    <h4>Email Us</h4>
+                    <p>abdelmaksoudmelek965@gmail.com</p>
+                </div>
+            </div>
+            <div class="contact-info-card">
+                <div class="contact-info-icon">📍</div>
+                <div>
+                    <h4>Location</h4>
+                    <p>University Campus, Department of Computer Science</p>
+                </div>
+            </div>
+            <div class="contact-info-card">
+                <div class="contact-info-icon">⏰</div>
+                <div>
+                    <h4>Office Hours</h4>
+                    <p>Sunday — Thursday: 8:00 AM — 4:00 PM</p>
+                </div>
+            </div>
+            <div class="contact-info-card">
+                <div class="contact-info-icon">🌐</div>
+                <div>
+                    <h4>Platform</h4>
+                    <p>ELearn — Modern E-Learning Platform</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-form-card">
+            <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:1.5rem;">✉️ Send a Message</h3>
+            <div id="contact-alert" class="alert"></div>
+
+            <form id="contact-form" novalidate>
+                <div class="form-group">
+                    <label for="contact-name">Your Name</label>
+                    <input type="text" id="contact-name" class="form-control" placeholder="Your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-email">Email Address</label>
+                    <input type="email" id="contact-email" class="form-control" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-subject">Subject</label>
+                    <input type="text" id="contact-subject" class="form-control" placeholder="How can we help?">
+                </div>
+                <div class="form-group">
+                    <label for="contact-message">Message</label>
+                    <textarea id="contact-message" class="form-control" rows="5"
+                              placeholder="Write your message here..." required></textarea>
+                </div>
+                <button type="submit" id="send-btn" class="btn btn-primary btn-block">
+                    📤 Send Message
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="js/courses.js"></script>
+<script>
+    // Setup nav
+    const user = getCurrentUser();
+    if (user) {
+        document.getElementById('nav-username').textContent = user.name;
+        const roleTag = document.getElementById('nav-role');
+        roleTag.textContent = user.role;
+        roleTag.className = 'role-tag ' + user.role.toLowerCase();
+
+        // Pre-fill name and email
+        document.getElementById('contact-name').value = user.name;
+        document.getElementById('contact-email').value = user.email;
+    }
+    document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('user');
+        window.location.href = '/index.html';
+    });
+
+    // Contact form — sends real email via API
+    document.getElementById('contact-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const alertEl = document.getElementById('contact-alert');
+        const btn     = document.getElementById('send-btn');
+        const name    = document.getElementById('contact-name').value.trim();
+        const email   = document.getElementById('contact-email').value.trim();
+        const subject = document.getElementById('contact-subject').value.trim();
+        const message = document.getElementById('contact-message').value.trim();
+
+        if (!name || !email || !message) {
+            alertEl.className = 'alert alert-error show';
+            alertEl.textContent = '⚠ Please fill in all required fields.';
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Sending...';
+
+        try {
+            const res = await fetch(API_BASE + '/auth/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, subject, message })
+            });
+            const data = await res.json();
+
+            if (!res.ok) throw new Error(data.error || 'Send failed');
+
+            alertEl.className = 'alert alert-success show';
+            alertEl.textContent = '✅ Message sent successfully! We will get back to you soon.';
+            document.getElementById('contact-subject').value = '';
+            document.getElementById('contact-message').value = '';
+        } catch (err) {
+            alertEl.className = 'alert alert-error show';
+            alertEl.textContent = '⚠ ' + err.message;
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '📤 Send Message';
+        }
+    });
+</script>
+</body>
+</html>

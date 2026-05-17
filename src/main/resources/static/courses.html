@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELearn — All Courses</title>
+    <meta name="description" content="Browse all available courses on ELearn">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar">
+    <a class="navbar-brand" href="dashboard.html">🎓 ELearn</a>
+    <ul class="navbar-nav">
+        <li><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+        <li><a class="nav-link active" href="courses.html">Courses</a></li>
+        <li><a class="nav-link" href="about.html">About</a></li>
+        <li><a class="nav-link" href="profile.html">Profile</a></li>
+    </ul>
+    <div style="display:flex; align-items:center; gap:1rem;">
+        <div class="user-badge">
+            <span>👤</span>
+            <span id="nav-username">...</span>
+            <span id="nav-role" class="role-tag">...</span>
+        </div>
+        <button id="logout-btn" class="btn btn-outline btn-sm">Logout</button>
+    </div>
+</nav>
+
+<!-- Hero Banner -->
+<div class="hero" style="padding:3rem 2rem;">
+    <h1 style="font-size:2rem;">Explore All Courses</h1>
+    <p>Find the course that suits you and start learning today.</p>
+    <!-- Search bar -->
+    <div style="max-width:450px; margin:0 auto; position:relative;">
+        <input type="text" id="search-input" class="form-control"
+               placeholder="🔍  Search courses..."
+               style="padding-left:1.2rem; border-radius:50px; background:rgba(255,255,255,0.07);">
+    </div>
+</div>
+
+<!-- Course Grid -->
+<div class="container">
+    <div id="courses-grid" class="course-grid">
+        <div class="empty-state" style="grid-column:1/-1;">
+            <div class="spinner"></div>
+            <p style="margin-top:1rem; color:var(--text-muted);">Loading courses...</p>
+        </div>
+    </div>
+</div>
+
+<script src="js/courses.js"></script>
+<script src="js/courses-page.js"></script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELearn — Course Detail</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7/bundles/stomp.umd.min.js"></script>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar">
+    <a class="navbar-brand" href="dashboard.html">🎓 ELearn</a>
+    <ul class="navbar-nav">
+        <li><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+        <li><a class="nav-link" href="courses.html">Courses</a></li>
+        <li><a class="nav-link" href="about.html">About</a></li>
+        <li><a class="nav-link" href="profile.html">Profile</a></li>
+    </ul>
+    <div style="display:flex; align-items:center; gap:1rem;">
+        <div class="user-badge">
+            <span>👤</span>
+            <span id="nav-username">...</span>
+            <span id="nav-role" class="role-tag">...</span>
+        </div>
+        <button id="logout-btn" class="btn btn-outline btn-sm">Logout</button>
+    </div>
+</nav>
+
+<!-- Course Header -->
+<div class="course-detail-header">
+    <div class="container">
+        <a href="courses.html" style="color:var(--text-muted); text-decoration:none;
+           font-size:0.85rem; display:inline-flex; align-items:center; gap:0.4rem; margin-bottom:1rem;">
+            ← Back to Courses
+        </a>
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+            <div>
+                <h1 id="course-title" style="font-size:1.8rem; font-weight:800;">Loading...</h1>
+                <p id="course-description" style="color:var(--text-muted); margin-top:0.4rem;"></p>
+                <div style="display:flex; align-items:center; gap:1rem; margin-top:1rem; flex-wrap:wrap;">
+                    <span id="course-teacher" style="color:var(--text-muted); font-size:0.9rem;"></span>
+                    <span id="course-lessons-count" class="badge badge-primary"></span>
+                    <span id="course-students-count" class="badge badge-success"></span>
+                </div>
+                <div style="margin-top:1.2rem;" id="enroll-area"></div>
+                <!-- Progress Bar (student only) -->
+                <div id="progress-area" style="margin-top:1rem;"></div>
+            </div>
+            <!-- Teacher course actions -->
+            <div id="teacher-actions" style="display:none; gap:0.6rem; flex-wrap:wrap;" >
+                <button onclick="openEditCourseModal()" class="btn btn-outline btn-sm">✏️ Edit Course</button>
+                <button onclick="confirmDeleteCourse()" class="btn btn-danger btn-sm">🗑 Delete Course</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container" style="padding-top:2rem; padding-bottom:2rem;">
+    <div style="display:grid; grid-template-columns:300px 1fr; gap:1.5rem; align-items:start;">
+
+        <!-- Left column: Lessons + Files -->
+        <div>
+            <!-- Lessons -->
+            <div class="section-header" style="margin-bottom:0.8rem;">
+                <h2 style="font-size:1rem;">📖 Lessons</h2>
+                <button id="add-lesson-btn" class="btn btn-primary btn-sm"
+                        style="display:none;" onclick="openAddLessonModal()">+ Add</button>
+            </div>
+            <div id="lesson-list" class="lesson-list" style="margin-bottom:1.5rem;">
+                <p style="color:var(--text-muted); font-size:0.9rem;">No lessons yet.</p>
+            </div>
+
+            <!-- Files Section -->
+            <div style="border-top:1px solid var(--border); padding-top:1.2rem;">
+                <div class="section-header" style="margin-bottom:0.8rem;">
+                    <h2 style="font-size:1rem;">📎 Course Files</h2>
+                </div>
+
+                <!-- Upload area (shown for all authenticated users) -->
+                <div id="upload-area" style="margin-bottom:1rem;">
+                    <div id="file-alert" class="alert"></div>
+                    <div style="display:flex; gap:0.5rem; align-items:center;">
+                        <input type="file" id="file-input"
+                               style="flex:1; padding:0.4rem; background:var(--dark-3);
+                                      border:1px solid var(--border); border-radius:8px;
+                                      color:var(--text); font-size:0.8rem; cursor:pointer;">
+                        <button id="upload-btn" class="btn btn-primary btn-sm"
+                                onclick="uploadFileForCourse()">⬆ Upload</button>
+                    </div>
+                    <p style="color:var(--text-muted); font-size:0.75rem; margin-top:0.4rem;">
+                        Max 50MB · PDF, Word, PPT, ZIP, etc.
+                    </p>
+                </div>
+
+                <!-- Files list -->
+                <div id="files-list"></div>
+            </div>
+        </div>
+
+        <!-- Right column: Tabs -->
+        <div>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('content', this)">📖 Lesson</button>
+                <button class="tab-btn" onclick="switchTab('announcements', this)">📢 Announcements</button>
+                <button class="tab-btn" onclick="switchTab('chat', this)">💬 Chat</button>
+            </div>
+
+            <!-- Lesson Content -->
+            <div id="tab-content" class="lesson-content-view">
+                <div class="empty-state">
+                    <div class="icon">📖</div>
+                    <h3>Select a lesson</h3>
+                    <p>Click any lesson on the left to view its content.</p>
+                </div>
+            </div>
+
+            <!-- Announcements -->
+            <div id="tab-announcements" style="display:none;">
+                <div class="empty-state" style="padding:2rem;">
+                    <div class="spinner"></div>
+                    <p style="margin-top:1rem; color:var(--text-muted);">Loading announcements...</p>
+                </div>
+            </div>
+
+            <!-- Chat -->
+            <div id="tab-chat" style="display:none;">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="chat-status"></div>
+                        <div>
+                            <strong style="font-size:0.95rem;">Course Chat Room</strong>
+                        </div>
+                    </div>
+                    <div id="chat-messages" class="chat-messages">
+                        <div class="empty-state" style="padding:2rem;">
+                            <div class="icon">💬</div>
+                            <h3>No messages yet</h3>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chat-input" class="chat-input"
+                               placeholder="Type a message… (Enter to send)">
+                        <button id="send-btn" class="btn btn-primary"
+                                style="border-radius:50%; width:44px; height:44px; padding:0; justify-content:center;">
+                            ➤
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Add Lesson -->
+<div id="add-lesson-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Add New Lesson</h3>
+            <button class="modal-close" onclick="closeAddLessonModal()">✕</button>
+        </div>
+        <div id="lesson-alert" class="alert"></div>
+        <form id="add-lesson-form">
+            <div class="form-group">
+                <label for="lesson-title">Lesson Title</label>
+                <input type="text" id="lesson-title" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="lesson-order">Order Number</label>
+                <input type="number" id="lesson-order" class="form-control" value="1" min="1">
+            </div>
+            <div class="form-group">
+                <label for="lesson-content">Content</label>
+                <textarea id="lesson-content" class="form-control" rows="6"
+                          placeholder="Write lesson content here..."></textarea>
+            </div>
+            <div style="display:flex; gap:0.8rem; justify-content:flex-end;">
+                <button type="button" class="btn btn-outline" onclick="closeAddLessonModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Lesson</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Edit Lesson -->
+<div id="edit-lesson-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Edit Lesson</h3>
+            <button class="modal-close" onclick="closeEditLessonModal()">✕</button>
+        </div>
+        <div id="edit-lesson-alert" class="alert"></div>
+        <form id="edit-lesson-form">
+            <input type="hidden" id="edit-lesson-id">
+            <div class="form-group">
+                <label for="edit-lesson-title">Lesson Title</label>
+                <input type="text" id="edit-lesson-title" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-lesson-order">Order Number</label>
+                <input type="number" id="edit-lesson-order" class="form-control" min="1">
+            </div>
+            <div class="form-group">
+                <label for="edit-lesson-content">Content</label>
+                <textarea id="edit-lesson-content" class="form-control" rows="6"></textarea>
+            </div>
+            <div style="display:flex; gap:0.8rem; justify-content:flex-end;">
+                <button type="button" class="btn btn-outline" onclick="closeEditLessonModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Lesson</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Edit Course -->
+<div id="edit-course-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Edit Course</h3>
+            <button class="modal-close" onclick="closeEditCourseModal()">✕</button>
+        </div>
+        <div id="edit-course-alert" class="alert"></div>
+        <form id="edit-course-form">
+            <div class="form-group">
+                <label for="edit-course-title">Course Title</label>
+                <input type="text" id="edit-course-title" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-course-desc">Description</label>
+                <textarea id="edit-course-desc" class="form-control"></textarea>
+            </div>
+            <div style="display:flex; gap:0.8rem; justify-content:flex-end;">
+                <button type="button" class="btn btn-outline" onclick="closeEditCourseModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Course</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="js/courses.js"></script>
+<script src="js/quiz.js"></script>
+<script src="js/announcements.js"></script>
+<script src="js/progress.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/file-manager.js"></script>
+<script src="js/course-detail.js"></script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELearn — About Us</title>
+    <meta name="description" content="Learn more about ELearn, the modern e-learning platform">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar">
+    <a class="navbar-brand" href="dashboard.html">🎓 ELearn</a>
+    <ul class="navbar-nav">
+        <li><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+        <li><a class="nav-link" href="courses.html">Courses</a></li>
+        <li><a class="nav-link active" href="about.html">About</a></li>
+        <li><a class="nav-link" href="contact.html">Contact</a></li>
+    </ul>
+    <div style="display:flex; align-items:center; gap:1rem;">
+        <div class="user-badge">
+            <span>👤</span>
+            <span id="nav-username">...</span>
+            <span id="nav-role" class="role-tag">...</span>
+        </div>
+        <button id="logout-btn" class="btn btn-outline btn-sm">Logout</button>
+    </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero" style="padding:4rem 2rem;">
+    <h1 style="font-size:2.5rem;">About ELearn</h1>
+    <p>Empowering education through technology — anytime, anywhere.</p>
+</div>
+
+<!-- About Content -->
+<div class="container" style="padding:3rem 1.5rem;">
+
+    <!-- Mission Section -->
+    <div class="about-grid">
+        <div class="about-card">
+            <div class="about-icon">🎯</div>
+            <h3>Our Mission</h3>
+            <p>To provide a modern, accessible, and interactive learning environment
+               that connects students with passionate teachers, enabling knowledge sharing
+               without boundaries.</p>
+        </div>
+        <div class="about-card">
+            <div class="about-icon">🌍</div>
+            <h3>Our Vision</h3>
+            <p>A world where quality education is available to everyone, regardless of
+               location or background. We believe in the power of digital learning to
+               transform lives and communities.</p>
+        </div>
+        <div class="about-card">
+            <div class="about-icon">💡</div>
+            <h3>Our Approach</h3>
+            <p>We combine structured course content with real-time interaction,
+               quizzes, and progress tracking to create an engaging and effective
+               learning experience.</p>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div style="margin-top:4rem;">
+        <h2 style="text-align:center; font-size:1.8rem; font-weight:800; margin-bottom:0.5rem;">
+            Platform Features
+        </h2>
+        <p style="text-align:center; color:var(--text-muted); margin-bottom:2.5rem;">
+            Everything you need for a complete e-learning experience
+        </p>
+
+        <div class="features-grid">
+            <div class="feature-item">
+                <span class="feature-emoji">📚</span>
+                <div>
+                    <h4>Course Management</h4>
+                    <p>Create, edit, and organize courses with multiple lessons and resources.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <span class="feature-emoji">📝</span>
+                <div>
+                    <h4>Interactive Quizzes</h4>
+                    <p>Test knowledge with MCQ quizzes attached to each lesson.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <span class="feature-emoji">💬</span>
+                <div>
+                    <h4>Real-Time Chat</h4>
+                    <p>WebSocket-powered live chat rooms for each course.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <span class="feature-emoji">📊</span>
+                <div>
+                    <h4>Progress Tracking</h4>
+                    <p>Track your learning journey with visual progress bars.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <span class="feature-emoji">📎</span>
+                <div>
+                    <h4>File Sharing</h4>
+                    <p>Upload and download course materials — PDFs, slides, and more.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <span class="feature-emoji">📢</span>
+                <div>
+                    <h4>Announcements</h4>
+                    <p>Teachers can post important updates for enrolled students.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tech Stack -->
+    <div style="margin-top:4rem; text-align:center;">
+        <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:2rem;">Built With</h2>
+        <div class="tech-stack">
+            <div class="tech-badge">☕ Java 17</div>
+            <div class="tech-badge">🍃 Spring Boot</div>
+            <div class="tech-badge">🗄️ MySQL</div>
+            <div class="tech-badge">🔌 WebSocket</div>
+            <div class="tech-badge">🔐 Spring Security</div>
+            <div class="tech-badge">🐳 Docker</div>
+        </div>
+    </div>
+</div>
+
+<script src="js/courses.js"></script>
+<script>
+    // Setup nav
+    const user = getCurrentUser();
+    if (user) {
+        document.getElementById('nav-username').textContent = user.name;
+        const roleTag = document.getElementById('nav-role');
+        roleTag.textContent = user.role;
+        roleTag.className = 'role-tag ' + user.role.toLowerCase();
+    }
+    document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('user');
+        window.location.href = '/index.html';
+    });
+</script>
+</body>
+</html>

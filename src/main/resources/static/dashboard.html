@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELearn — Dashboard</title>
+    <meta name="description" content="E-Learning platform dashboard">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar">
+    <a class="navbar-brand" href="dashboard.html">🎓 ELearn</a>
+    <ul class="navbar-nav">
+        <li><a class="nav-link active" href="dashboard.html">Dashboard</a></li>
+        <li><a class="nav-link" href="courses.html">Courses</a></li>
+        <li><a class="nav-link" href="about.html">About</a></li>
+        <li><a class="nav-link" href="profile.html">Profile</a></li>
+    </ul>
+    <div style="display:flex; align-items:center; gap:1rem;">
+        <div class="user-badge">
+            <span>👤</span>
+            <span id="nav-username">...</span>
+            <span id="nav-role" class="role-tag">...</span>
+        </div>
+        <button id="logout-btn" class="btn btn-outline btn-sm">Logout</button>
+    </div>
+</nav>
+
+<!-- Dashboard Content -->
+<div class="container">
+
+    <!-- Header -->
+    <div class="dashboard-header">
+        <h1 id="welcome-msg">Welcome back 👋</h1>
+        <p style="color:var(--text-muted); margin-top:0.3rem;" id="welcome-sub"></p>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-grid" id="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon purple">📚</div>
+            <div>
+                <div class="stat-value" id="stat-courses">0</div>
+                <div class="stat-label" id="stat-courses-label">My Courses</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green">✅</div>
+            <div>
+                <div class="stat-value" id="stat-lessons">0</div>
+                <div class="stat-label">Total Lessons</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon pink">💬</div>
+            <div>
+                <div class="stat-value">Live</div>
+                <div class="stat-label">Chat Available</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Courses Section -->
+    <div class="section-header">
+        <h2 id="section-title">My Courses</h2>
+        <!-- Create button: shown only for teachers -->
+        <button id="create-course-btn" class="btn btn-primary btn-sm"
+                style="display:none;" onclick="openCreateModal()">
+            + New Course
+        </button>
+    </div>
+
+    <div id="my-courses-grid" class="course-grid">
+        <div class="empty-state" style="grid-column:1/-1;">
+            <div class="spinner"></div>
+            <p style="margin-top:1rem; color:var(--text-muted);">Loading courses...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Create Course (Teacher only) -->
+<div id="create-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Create New Course</h3>
+            <button class="modal-close" onclick="closeCreateModal()">✕</button>
+        </div>
+        <div id="modal-alert" class="alert"></div>
+        <form id="create-course-form">
+            <div class="form-group">
+                <label for="course-title">Course Title</label>
+                <input type="text" id="course-title" class="form-control"
+                       placeholder="e.g. Introduction to Java" required>
+            </div>
+            <div class="form-group">
+                <label for="course-desc">Description</label>
+                <textarea id="course-desc" class="form-control"
+                          placeholder="What will students learn?"></textarea>
+            </div>
+            <div style="display:flex; gap:0.8rem; justify-content:flex-end;">
+                <button type="button" class="btn btn-outline" onclick="closeCreateModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create Course</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="js/courses.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

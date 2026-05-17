@@ -1,0 +1,10 @@
+target/
+.git/
+.gitignore
+*.md
+.idea/
+*.iml
+.vscode/
+uploads/
+start.bat
+docker-compose.yml
