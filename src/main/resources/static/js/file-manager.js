@@ -2,7 +2,7 @@
 // file-manager.js — handles file upload and download
 // =============================================
 
-const FILE_API = 'http://localhost:8080/api/files';
+const FILE_API = window.location.origin + '/api/files';
 
 // Load and display all files for a course
 async function loadFiles(courseId) {

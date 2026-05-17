@@ -22,6 +22,7 @@ public class CourseService {
     // -----------------------------------------------
     // CREATE Course
     // -----------------------------------------------
+    @Transactional
     public CourseDTO.CourseResponse createCourse(CourseDTO.CreateCourseRequest request, User teacher) {
         if (teacher.getRole() != User.Role.TEACHER) {
             throw new RuntimeException("Only teachers can create courses");
@@ -41,6 +42,7 @@ public class CourseService {
     // -----------------------------------------------
     // READ — Single course with lessons
     // -----------------------------------------------
+    @Transactional(readOnly = true)
     public CourseDTO.CourseResponse getCourseById(Long id) {
         Course course = courseRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Course not found: " + id));
@@ -58,6 +60,7 @@ public class CourseService {
     // -----------------------------------------------
     // UPDATE Course
     // -----------------------------------------------
+    @Transactional
     public CourseDTO.CourseResponse updateCourse(Long id, CourseDTO.CreateCourseRequest request, User teacher) {
         Course course = courseRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Course not found: " + id));
