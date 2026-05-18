@@ -12,20 +12,21 @@
 <!-- Navigation -->
 <nav class="navbar">
     <a class="navbar-brand" href="dashboard.html">🎓 ELearn</a>
-    <ul class="navbar-nav">
-        <li><a class="nav-link" href="dashboard.html">Dashboard</a></li>
-        <li><a class="nav-link" href="courses.html">Courses</a></li>
-        <li><a class="nav-link" href="about.html">About</a></li>
-        <li><a class="nav-link active" href="contact.html">Contact</a></li>
-    </ul>
-    <div style="display:flex; align-items:center; gap:1rem;">
+    <div class="navbar-right" style="display:flex; align-items:center; gap:0.6rem;">
         <div class="user-badge">
             <span>👤</span>
             <span id="nav-username">...</span>
             <span id="nav-role" class="role-tag">...</span>
         </div>
         <button id="logout-btn" class="btn btn-outline btn-sm">Logout</button>
+        <button class="menu-toggle" onclick="document.querySelector('.navbar-nav').classList.toggle('open')" aria-label="Toggle menu">☰</button>
     </div>
+    <ul class="navbar-nav">
+        <li><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+        <li><a class="nav-link" href="courses.html">Courses</a></li>
+        <li><a class="nav-link" href="about.html">About</a></li>
+        <li><a class="nav-link active" href="contact.html">Contact</a></li>
+    </ul>
 </nav>
 
 <!-- Hero -->
